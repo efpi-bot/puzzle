@@ -45,12 +45,12 @@ class puzzle:
 	async def getRandPuzzle(self):
 
 		rand_puzzle = random.choice(self.puzzle_list)
-		print(rand_puzzle)
+		#print(rand_puzzle)
 		self.board = chess.Board(rand_puzzle[1])
 		self.moves = rand_puzzle[2].split(' ')
 		self.rating = rand_puzzle[3]
 
-		print(self.moves)
+		#print(self.moves)
 
 		await self.doMove()
 
@@ -63,7 +63,7 @@ class puzzle:
 		self.board.push(self.move)
 		self.moves.pop(0)
 
-		print(self.moves)
+		#print(self.moves)
 
 
 	async def send(self, message):
@@ -96,7 +96,7 @@ class puzzle:
 			if add == True:
 				self.ranking.append([str(user), amount])
 			else:
-				self.ranking.append([str(user), 0 ])
+				self.ranking.append([str(user), 0])
 
 		self.csvWrite()
 
