@@ -112,6 +112,17 @@ class puzzle:
 
 		return embed
 
+	def getScore(self, user):
+
+		self.csvRead()
+
+		embed = discord.Embed(colour=discord.Colour.random())
+		for i in range(len(self.ranking)):
+			if user == str(self.ranking[i][0]):
+				embed.add_field(name=self.ranking[i][0],value='\ud83e\ude99 '+str(self.ranking[i][1]),inline=False)
+				break
+		return embed
+
 
 	async def run(self, message):
 		self.message = message
@@ -123,6 +134,9 @@ class puzzle:
 
 			if content == 'top':
 				await message.channel.send(embed=self.getRanking())
+
+			elif content == 'score':
+				await message.channel.send(embed=self.getScore(str(message.author)))
 
 			elif self.state == 'idle' and content == 'start':
 
