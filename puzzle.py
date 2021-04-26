@@ -68,7 +68,7 @@ class puzzle:
 
 	async def send(self, message):
 
-		svg = chess.svg.board(self.board, size = 350, lastmove = self.move)
+		svg = chess.svg.board(self.board, size = 350, lastmove = self.move)#, colors={'square light':'#ffffff', 'square dark':'#ff0000'})
 		puzzle_png = svg2png(svg)
 
 		data = io.BytesIO(puzzle_png)
@@ -164,16 +164,19 @@ class puzzle:
 					self.transferCoins(message.author, int(self.rating), False)
 					self.state = 'idle'
 
-				elif content == 'rating':
-					await message.channel.send(self.rating)
+				# elif content == 'rating':
+				# 	await message.channel.send(self.rating)
 
 				elif content == 'start':
 					#await message.channel.send()
 					await self.send('Najpierw skończ te puzzle! (albo sie poddaj)')
 
-				else:
+				elif len(content) == 4:
 					await message.channel.send('To nie jest najlepszy ruch. (- \ud83e\ude99 500)')
 					self.transferCoins(message.author, 500, False)
+
+				else:
+					await message.channel.send('Nie ma takiej komendy, try again.')
 
 				if len(self.moves) == 0:
 					await message.channel.send(f'Brawo {mention} rozwiązałeś puzzle! (+ \ud83e\ude99 '+self.rating+')')
