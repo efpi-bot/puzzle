@@ -93,11 +93,16 @@ class puzzle:
 				break
 
 		if new_user == True:
-			self.ranking.append([str(user), amount])
+			if add == True:
+				self.ranking.append([str(user), amount])
+			else:
+				self.ranking.append([str(user), 0 ])
 
 		self.csvWrite()
 
 	def getRanking(self):
+
+		self.csvRead()
 
 		embed = discord.Embed(colour=discord.Colour.random())
 		self.ranking = sorted(self.ranking,key=lambda l:l[1], reverse=True)
