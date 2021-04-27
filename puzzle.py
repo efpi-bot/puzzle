@@ -209,11 +209,7 @@ class puzzle:
 				await self.setUserColors(content)
 
 			elif content.startswith('colors'):
-				color_list = ''
-				for i in matplotlib.colors.cnames:
-					color_list += i+'\n'
-
-				await message.channel.send(color_list)
+				await message.channel.send(file=discord.File('colors.png'))
 				
 			elif self.state == 'idle' and content == 'start':
 
@@ -258,7 +254,7 @@ class puzzle:
 					self.state = 'idle'
 
 			else:
-				await message.channel.send('Aby zagrać napisz **puzzle start**.')
+				await message.channel.send('Aby zagrać napisz **puzzle start**')
 
 
 
