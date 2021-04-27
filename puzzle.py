@@ -6,6 +6,7 @@ import random
 import io
 from cairosvg import svg2png
 import matplotlib.colors
+import re
 
 
 
@@ -239,7 +240,7 @@ class puzzle:
 			elif content == 'start':
 				await self.send('Najpierw skończ te puzzle! (albo sie poddaj)',message)
 
-			elif len(content) == 4:
+			elif len(content) == 4 and re.match('([a-h][1-8]){2}',content) != None:
 				await message.channel.send('To nie jest najlepszy ruch. (- \ud83e\ude99 500)')
 				self.transferCoins(user, 500, False)
 
