@@ -24,7 +24,6 @@ class puzzle:
 		self.move = None
 		self.rating = None
 		self.ranking = []
-		self.user = ''
 
 		self.csvRead()
 
@@ -68,22 +67,23 @@ class puzzle:
 
 		#print(self.moves)
 
-	async def setUserColors(self, content):
+	async def setUserColors(self, content, message):
+		user = str(message.author)
 
 		content = content.split(' ')
 		if len(content) != 3:
-			await self.message.channel.send('Niepoprawne użycie')
+			await message.channel.send('Niepoprawne użycie')
 			return
 		try:
 			colors = {'square light':matplotlib.colors.cnames[content[1]], 'square dark':matplotlib.colors.cnames[content[2]]}	
 		except:
-			await self.message.channel.send('Niepoprawne kolory')
+			await message.channel.send('Niepoprawne kolory')
 			return
 
 		for i in self.ranking:
-			if self.user == i[0]:
+			if user == i[0]:
 				if i[1] < 10000:
-					await self.message.channel.send('Nie masz wystarczającej liczby monet! (\ud83e\ude99 10000)')
+					await message.channel.send('Nie masz wystarczającej liczby monet! (\ud83e\ude99 10000)')
 					return
 
 				if len(i) != 4:
@@ -93,14 +93,14 @@ class puzzle:
 					i[2] = colors['square light']
 					i[3] = colors['square dark']
 
-				self.transferCoins(self.user, 10000, False)
-				await self.message.channel.send('swag (- \ud83e\ude99 10000)')
+				self.transferCoins(user, 10000, False)
+				await message.channel.send('swag (- \ud83e\ude99 10000)')
 
 
-	def getUserColors(self):
+	def getUserColors(self, message):
 
 		for i in self.ranking:
-			if self.user == i[0]:
+			if str(message.author) == i[0]:
 				try:
 					colors = {'square light':i[2], 'square dark':i[3]}
 					return colors
@@ -108,32 +108,32 @@ class puzzle:
 					return {}
 		return {}
 
-	async def sendBoardPreview(self, content):
+	async def sendBoardPreview(self, content, message):
 
 		content = content.split(' ')
 		if len(content) != 3:
-			await self.message.channel.send('Niepoprawne użycie')
+			await message.channel.send('Niepoprawne użycie')
 			return
 		try:
 			prev_colors = {'square light':matplotlib.colors.cnames[content[1]], 'square dark':matplotlib.colors.cnames[content[2]]}	
 		except:
-			await self.message.channel.send('Niepoprawne kolory')
+			await message.channel.send('Niepoprawne kolory')
 			return
 
 		svg = chess.svg.board(chess.BaseBoard(), size = 350, colors=prev_colors)
 		puzzle_png = svg2png(svg)
 
 		data = io.BytesIO(puzzle_png)
-		await self.message.channel.send(file=discord.File(data, 'preview.png'))
+		await message.channel.send(file=discord.File(data, 'preview.png'))
 
 
-	async def send(self, message):
+	async def send(self, text, message):
 
-		svg = chess.svg.board(self.board, size = 350, lastmove = self.move, colors=self.getUserColors())
+		svg = chess.svg.board(self.board, size = 350, lastmove = self.move, colors=self.getUserColors(message))
 		puzzle_png = svg2png(svg)
 
 		data = io.BytesIO(puzzle_png)
-		await self.message.channel.send(message, file=discord.File(data, 'puzzle.png'))
+		await message.channel.send(text, file=discord.File(data, 'puzzle.png'))
 
 
 	def transferCoins(self, user, amount, add):
@@ -155,9 +155,9 @@ class puzzle:
 
 		if new_user == True:
 			if add == True:
-				self.ranking.append([str(user), amount])
+				self.ranking.append([user, amount])
 			else:
-				self.ranking.append([str(user), 0])
+				self.ranking.append([user, 0])
 
 		self.csvWrite()
 
@@ -186,75 +186,73 @@ class puzzle:
 
 
 	async def run(self, message):
-		self.message = message
+
 		mention = message.author.mention
-		self.user = str(message.author)
+		user = str(message.author)
 
-		if message.content.startswith('puzzle '):
+		content = message.content.replace('puzzle ', '')
 
-			content = message.content.replace('puzzle ', '')
+		if content == 'top':
+			await message.channel.send(embed=self.getRanking())
 
-			if content == 'top':
-				await message.channel.send(embed=self.getRanking())
+		elif content == 'score':
+			await message.channel.send(embed=self.getScore(user))
 
-			elif content == 'score':
-				await message.channel.send(embed=self.getScore(self.user))
+		elif content.startswith('preview'):
 
-			elif content.startswith('preview'):
+			await self.sendBoardPreview(content, message)
 
-				await self.sendBoardPreview(content)
+		elif content.startswith('skin'):
 
-			elif content.startswith('skin'):
+			await self.setUserColors(content, message)
 
-				await self.setUserColors(content)
+		elif content.startswith('colors'):
+			await message.channel.send(file=discord.File('colors.png'))
+			
+		elif self.state == 'idle' and content == 'start':
 
-			elif content.startswith('colors'):
-				await message.channel.send(file=discord.File('colors.png'))
-				
-			elif self.state == 'idle' and content == 'start':
+			await self.getRandPuzzle()
 
-				await self.getRandPuzzle()
+			await self.send('**Wartość: **'+'\ud83e\ude99 '+self.rating, message)
 
-				await self.send('**Wartość: **'+'\ud83e\ude99 '+self.rating)
-
-				self.state = 'playing'
+			self.state = 'playing'
 
 
-			elif self.state == 'playing':
+		elif self.state == 'playing':
 
-				if content == self.moves[0]:
+			if content == self.moves[0]:
+				await self.doMove()
+				if len(self.moves) != 0:
 					await self.doMove()
-					if len(self.moves) != 0:
-						await self.doMove()
 
-					await self.send('To był super ruch \ud83e\udde9')
+				await self.send('To był super ruch \ud83e\udde9',message)
 
-				# elif content == 'cheat':
-				# 	await message.channel.send('||'+self.moves[0]+'||')
+			# elif content == 'cheat':
+			# 	await message.channel.send('||'+self.moves[0]+'||')
 
-				elif content == 'give up':
-					await message.channel.send('Przykro mi jestes cipom. (- \ud83e\ude99 '+self.rating+')')
-					self.transferCoins(self.user, int(self.rating), False)
-					self.state = 'idle'
+			elif content == 'give up':
+				await message.channel.send('Przykro mi jestes cipom. (- \ud83e\ude99 '+self.rating+')')
+				self.transferCoins(user, int(self.rating), False)
+				self.state = 'idle'
 
 
-				elif content == 'start':
-					await self.send('Najpierw skończ te puzzle! (albo sie poddaj)')
+			elif content == 'start':
+				await self.send('Najpierw skończ te puzzle! (albo sie poddaj)',message)
 
-				elif len(content) == 4:
-					await message.channel.send('To nie jest najlepszy ruch. (- \ud83e\ude99 500)')
-					self.transferCoins(self.user, 500, False)
-
-				else:
-					await message.channel.send('Nie ma takiej komendy, try again.')
-
-				if len(self.moves) == 0:
-					await message.channel.send(f'Brawo {mention} rozwiązałeś puzzle! (+ \ud83e\ude99 '+self.rating+')')
-					self.transferCoins(self.user, int(self.rating), True)
-					self.state = 'idle'
+			elif len(content) == 4:
+				await message.channel.send('To nie jest najlepszy ruch. (- \ud83e\ude99 500)')
+				self.transferCoins(user, 500, False)
 
 			else:
-				await message.channel.send('Aby zagrać napisz **puzzle start**')
+				await message.channel.send('Nie ma takiej komendy, try again.')
+
+			if len(self.moves) == 0:
+				await message.channel.send(f'Brawo {mention} rozwiązałeś puzzle! (+ \ud83e\ude99 '+self.rating+')')
+				self.transferCoins(user, int(self.rating), True)
+				self.state = 'idle'
+
+		else:
+			await message.channel.send('Aby zagrać napisz **puzzle start**')
 
 
 
@@ -272,10 +270,11 @@ async def on_ready():
 @client.event
 async def on_message(message):
 
-	if message.author == client.user:
+	if message.author == client.user or str(message.author).endswith('#7246'):
 		return
 
-	await puzzle.run(message)
+	elif message.content.startswith('puzzle'):
+		await puzzle.run(message)
 
 
 client.run(KEY)
