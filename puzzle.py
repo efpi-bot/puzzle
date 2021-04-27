@@ -106,6 +106,7 @@ class puzzle:
 					return colors
 				except:
 					return {}
+		return {}
 
 	async def sendBoardPreview(self, content):
 
