@@ -40,6 +40,7 @@ class puzzle:
 	def csvWrite(self):
 		with open('ranking.csv', 'w') as f:
 			writer = csv.writer(f)
+			self.ranking = sorted(self.ranking,key=lambda l:l[1], reverse=True)
 			writer.writerows(self.ranking)
 
 
@@ -82,7 +83,7 @@ class puzzle:
 		for i in self.ranking:
 			if self.user == i[0]:
 				if i[1] < 10000:
-					await message.channel.send('Nie masz wystarczającej liczby monet! (\ud83e\ude99 10000)')
+					await self.message.channel.send('Nie masz wystarczającej liczby monet! (\ud83e\ude99 10000)')
 					return
 
 				if len(i) != 4:
@@ -93,6 +94,7 @@ class puzzle:
 					i[3] = colors['square dark']
 
 				self.transferCoins(self.user, 10000, False)
+				await self.message.channel.send('swag (- \ud83e\ude99 10000)')
 
 
 	def getUserColors(self):
@@ -204,6 +206,11 @@ class puzzle:
 			elif content.startswith('skin'):
 
 				await self.setUserColors(content)
+
+			elif content.startswith('colors'):
+
+				with open('147colors.txt') as color_names:
+					await message.channel.send(color_names.read()) 
 				
 			elif self.state == 'idle' and content == 'start':
 
