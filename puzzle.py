@@ -5,7 +5,7 @@ import csv
 import random
 import io
 from cairosvg import svg2png
-from colour import Color
+import matplotlib.colors
 
 
 
@@ -75,7 +75,7 @@ class puzzle:
 			await self.message.channel.send('Niepoprawne użycie')
 			return
 		try:
-			colors = {'square light':Color(content[1]).hex_l, 'square dark':Color(content[2]).hex_l}	
+			colors = {'square light':matplotlib.colors.cnames[content[1]], 'square dark':matplotlib.colors.cnames[content[2]]}	
 		except:
 			await self.message.channel.send('Niepoprawne kolory')
 			return
@@ -115,7 +115,7 @@ class puzzle:
 			await self.message.channel.send('Niepoprawne użycie')
 			return
 		try:
-			prev_colors = {'square light':Color(content[1]).hex_l, 'square dark':Color(content[2]).hex_l}	
+			prev_colors = {'square light':matplotlib.colors.cnames[content[1]], 'square dark':matplotlib.colors.cnames[content[2]]}	
 		except:
 			await self.message.channel.send('Niepoprawne kolory')
 			return
@@ -209,9 +209,11 @@ class puzzle:
 				await self.setUserColors(content)
 
 			elif content.startswith('colors'):
+				color_list = ''
+				for i in matplotlib.colors.cnames:
+					color_list += i+'\n'
 
-				with open('147colors.txt') as color_names:
-					await message.channel.send(color_names.read()) 
+				await message.channel.send(color_list)
 				
 			elif self.state == 'idle' and content == 'start':
 
