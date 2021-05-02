@@ -118,7 +118,7 @@ class puzzle:
 			await message.channel.send('Niepoprawne użycie')
 			return
 		try:
-			prev_colors = {'square light':matplotlib.colors.cnames[content[1]], 'square dark':matplotlib.colors.cnames[content[2]]}	
+			prev_colors = {'square light':matplotlib.colors.cnames[content[1]], 'square dark':matplotlib.colors.cnames[content[2]]}
 		except:
 			await message.channel.send('Niepoprawne kolory')
 			return
