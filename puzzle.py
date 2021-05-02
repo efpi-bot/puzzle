@@ -96,7 +96,8 @@ class puzzle:
 
 				self.transferCoins(user, 10000, False)
 				await message.channel.send('swag (- \ud83e\ude99 10000)')
-				break
+				return
+				
 		await message.channel.send('Nie ma takiego użytkownika')
 
 
