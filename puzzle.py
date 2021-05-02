@@ -96,8 +96,8 @@ class puzzle:
 
 				self.transferCoins(user, 10000, False)
 				await message.channel.send('swag (- \ud83e\ude99 10000)')
-			else:
-				await message.channel.send('Nie ma takiego użytkownika')
+				break
+		await message.channel.send('Nie ma takiego użytkownika')
 
 
 	def getUserColors(self, message):
