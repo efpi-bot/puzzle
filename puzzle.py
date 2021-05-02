@@ -96,6 +96,8 @@ class puzzle:
 
 				self.transferCoins(user, 10000, False)
 				await message.channel.send('swag (- \ud83e\ude99 10000)')
+			else:
+				await message.channel.send('Nie ma takiego użytkownika')
 
 
 	def getUserColors(self, message):
@@ -182,7 +184,8 @@ class puzzle:
 		for i in range(len(self.ranking)):
 			if user == str(self.ranking[i][0]):
 				embed.add_field(name=self.ranking[i][0],value='\ud83e\ude99 '+str(self.ranking[i][1]),inline=False)
-				break
+				return embed
+		embed.add_field(name='niema takiego', value='uzytkownika')
 		return embed
 
 
