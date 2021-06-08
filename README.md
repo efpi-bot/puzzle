@@ -11,3 +11,12 @@ discord bot for solving (li)chess puzzles (battle royale style)
 - puzzle skin white brown - buy white/brown checkerboard skin (default cost is 10000 coins)
 - puzzle top - display ranking table
 - puzzle score - display user score
+
+### Setup:
+- download puzzle database (.csv) from https://database.lichess.org/#puzzles
+- install required python libraries
+- create s file named 'key' with your bot's token inside
+- run it with python
+
+### English translation soon...
+![puzlegif](https://user-images.githubusercontent.com/82051234/121247104-24a54480-c8a2-11eb-99ac-e808b121e987.gif)
