@@ -17,7 +17,7 @@ discord bot for solving (li)chess puzzles (battle royale style)
 - download puzzle database (.csv) from https://database.lichess.org/#puzzles
 - install required python libraries
 - create a file named 'key' with your bot's token inside
-- run it with python
+- run 'puzzle.py' with python
 
 ### English translation soon...
 ![puzlegif](https://user-images.githubusercontent.com/82051234/121247104-24a54480-c8a2-11eb-99ac-e808b121e987.gif)
