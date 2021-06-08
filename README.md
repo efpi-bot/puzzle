@@ -13,9 +13,10 @@ discord bot for solving (li)chess puzzles (battle royale style)
 - puzzle score - display user score
 
 ### Setup:
+- clone this repo
 - download puzzle database (.csv) from https://database.lichess.org/#puzzles
 - install required python libraries
-- create s file named 'key' with your bot's token inside
+- create a file named 'key' with your bot's token inside
 - run it with python
 
 ### English translation soon...
