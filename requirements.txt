@@ -1,0 +1,5 @@
+CairoSVG==2.5.2
+matplotlib==3.4.1
+chess==1.5.0
+discord.py==1.6.0
+discord==1.0.1
