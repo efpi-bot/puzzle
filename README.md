@@ -16,6 +16,7 @@ discord bot for solving (li)chess puzzles (battle royale style)
 - clone this repo
 - download puzzle database (.csv) from https://database.lichess.org/#puzzles
 - install required python libraries
+- sudo apt-get install libcairo2-dev
 - create a file named 'key' with your bot's token inside
 - run 'puzzle.py' with python
 
