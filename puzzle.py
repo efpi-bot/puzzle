@@ -7,6 +7,7 @@ import io
 from cairosvg import svg2png
 import matplotlib.colors
 import re
+import os
 
 
 
@@ -14,10 +15,10 @@ class puzzle:
 
 	def __init__(self):
 
-		with open('lichess_db_puzzle.csv', newline='') as db_puzzle:
-			reader = csv.reader(db_puzzle)
+		# with open('lichess_db_puzzle.csv', newline='') as db_puzzle:
+		# 	reader = csv.reader(db_puzzle)
 
-			self.puzzle_list = list(reader)
+		# 	self.puzzle_list = list(reader)
 
 		self.board = None
 		self.moves = []
@@ -47,8 +48,10 @@ class puzzle:
 
 	async def getRandPuzzle(self):
 
-		rand_puzzle = random.choice(self.puzzle_list)
-		#print(rand_puzzle)
+		# rand_puzzle = random.choice(self.puzzle_list)
+		rand_puzzle = os.system('shuf -n 1 lichess_db_puzzle.csv > rand_puzzle.txt')
+		rand_puzzle = open('rand_puzzle.txt').read().split(',')
+		print(rand_puzzle)
 		self.board = chess.Board(rand_puzzle[1])
 		self.moves = rand_puzzle[2].split(' ')
 		self.rating = rand_puzzle[3]
